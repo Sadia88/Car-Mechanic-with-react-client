@@ -9,7 +9,7 @@ const Checkout = () => {
     const {_id,title,price}=service
 
 
-    const handlePlaceOrder=(event)=>{
+    const handlePlaceOrder=event=>{
         event.preventDefault()
         const form=event.target
         const name=`${form.firstName.value} ${form.lastName.value}`
@@ -17,7 +17,7 @@ const Checkout = () => {
         const message=form.message.value;
         const phone=form.phone.value
 
-console.log(name,email,phone, message)
+// console.log(name,email,phone, message)
         const order={
             service: _id,
             serviceName: title,
@@ -34,24 +34,28 @@ console.log(name,email,phone, message)
 
         // }
 
-        fetch('http://localhost:5000/orders',{
-            method: "POST",
-            headers:{
-                'content-type':'application/json'
+        // https://car-mechanic-server-sadia88.vercel.app
+
+        fetch('https://car-mechanic-server-sadia88.vercel.app/orders',{
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                authorization: `Bearer ${localStorage.getItem('token')}`
             },
             body: JSON.stringify(order)
-
         })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                if(data.acknowledged){
+                    alert('Order placed successfully')
+                    form.reset();
+                    
+                }
+            })
+            .catch(er => console.error(er));
 
-        .then(res=>res.json())
-        .then(data=>{
-            console.log(data)
-            if(data.acknowledge){
-                alert('Your Order is Placed successfully')
-                form.reset()
-            }
-        })
-        .catch(err=>console.error(err))
+
     }
     return (
         <div className='py-10 text-center'>

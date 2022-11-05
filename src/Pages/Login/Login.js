@@ -1,12 +1,16 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useReducer, useState } from 'react';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import login from '../../../src/assets/images/login/login.svg'
 import { AuthContext } from '../../contexts/AuthProvider/AuthProvider';
 import { BsGoogle,BsFacebook } from "react-icons/bs";
+import { current } from 'daisyui/src/colors';
 
 const Login = () => {
 const {signIn,googleSignin}=useContext(AuthContext)
-
+const [error,setError]=useState('')
+const navigate = useNavigate();
+const location=useLocation()
+let from = location.state?.from?.pathname || "/";
     const handleSubmit=event=>{
         event.preventDefault()
         const form=event.target
@@ -16,13 +20,41 @@ const {signIn,googleSignin}=useContext(AuthContext)
         .then((result) => {
             // Signed in 
             const user = result.user;
-            console.log(user)
+            const currentUser={
+              email: user.email
+            }
+
+            fetch('https://car-mechanic-server-sadia88.vercel.app/jwt',{
+
+            method: "POST",
+            headers:{
+              'content-type': 'application/json'
+            },
+            body : JSON.stringify(currentUser)
+            })
+            .then(res=>res.json())
+            .then(data=>{
+              console.log(data)
+            localStorage.setItem('token',data.token)
+            setError('')
+            form.reset()
+            navigate(from, { replace: true });
+            })
+
+
+
+
+
+
+            
+           
+            
             // ...
           })
           .catch((error) => {
           
             const errorMessage = error.message;
-            console.log(errorMessage)
+            setError(errorMessage)
           });
         
 
@@ -35,6 +67,7 @@ const {signIn,googleSignin}=useContext(AuthContext)
            
             const user = result.user;
            console.log(user)
+           navigate(from, { replace: true });
           }).catch((error) => {
           
             const errorMessage = error.message;
@@ -72,6 +105,9 @@ const {signIn,googleSignin}=useContext(AuthContext)
         <div className="form-control mt-6">
           <input type='submit' className="btn bg-orange-600 border-none" value='Sign In' />
         </div>
+        <div>
+          {error}
+        </div>
         <div className="form-control mt-6 text-center">
             <p>Or Sign In with</p>
       <div className='text-center flex justify-around'>
@@ -79,6 +115,7 @@ const {signIn,googleSignin}=useContext(AuthContext)
         <button><BsFacebook></BsFacebook></button>
       </div>
         </div>
+        
       </form>
       <p className='text-center'>New to Car Mechanic <Link className=" text-orange-600 font-bold "  to='/signup'>Sign up</Link></p>
     </div>

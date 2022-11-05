@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../../assets/logo.svg'
+import { AuthContext } from '../../../contexts/AuthProvider/AuthProvider';
 
 const Header = () => {
-
+const {user,logOut}=useContext(AuthContext)
     const MenuItems=<>
     <li><Link to='/' className='font-semibold'>Home</Link></li>
-    <li><Link to='/login' className='font-semibold'>Login</Link></li>
+   {
+   user?.email?
+   <>
+   <li><Link to='/orders' className='font-semibold'>Orders</Link></li>
+   <li><button onClick={logOut}>Logout</button></li>
+   </>
+   :
+   <li><Link to='/login' className='font-semibold'>Login</Link></li>}
+
+   
     </>
     return (
         <div className="navbar h-20 mb-12 bg-base-100">
