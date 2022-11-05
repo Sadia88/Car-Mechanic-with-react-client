@@ -34,7 +34,7 @@ const Orders = () => {
           fetch(`https://car-mechanic-server-sadia88.vercel.app/orders/${id}`,{
               method: "DELETE",
               headers: {
-                  authorization: `Bearer ${localStorage.getItem('gtoken')}`
+                  authorization: `Bearer ${localStorage.getItem('token')}`
               }
           })
           .then(res=>res.json())

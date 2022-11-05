@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Services from '../Home/Services/Services';
 
 const OrderRow = ({order,handleDelete,handleStatusUpdate}) => {
-    console.log(order)
+    // console.log(order)
     const {_id,serviceName,price,email,customer,phone,service,status}=order
 
     const[orderService,setOrderService]=useState({})

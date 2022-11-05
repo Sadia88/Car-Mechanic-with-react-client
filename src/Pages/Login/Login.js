@@ -4,6 +4,7 @@ import login from '../../../src/assets/images/login/login.svg'
 import { AuthContext } from '../../contexts/AuthProvider/AuthProvider';
 import { BsGoogle,BsFacebook } from "react-icons/bs";
 import { current } from 'daisyui/src/colors';
+import { setAuthToken } from '../../api/auth';
 
 const Login = () => {
 const {signIn,googleSignin}=useContext(AuthContext)
@@ -20,41 +21,14 @@ let from = location.state?.from?.pathname || "/";
         .then((result) => {
             // Signed in 
             const user = result.user;
-            const currentUser={
-              email: user.email
-            }
-
-            fetch('https://car-mechanic-server-sadia88.vercel.app/jwt',{
-
-            method: "POST",
-            headers:{
-              'content-type': 'application/json'
-            },
-            body : JSON.stringify(currentUser)
-            })
-            .then(res=>res.json())
-            .then(data=>{
-              console.log(data)
-            localStorage.setItem('token',data.token)
-            setError('')
-            form.reset()
-            navigate(from, { replace: true });
-            })
-
-
-
-
-
-
-            
-           
-            
+            setAuthToken(user)
             // ...
           })
           .catch((error) => {
           
             const errorMessage = error.message;
             setError(errorMessage)
+            navigate(from, { replace: true });
           });
         
 
@@ -66,9 +40,14 @@ let from = location.state?.from?.pathname || "/";
             
            
             const user = result.user;
-           console.log(user)
-           navigate(from, { replace: true });
-          }).catch((error) => {
+
+            setAuthToken(user)
+            navigate(from, { replace: true });
+           
+          })
+          
+          
+          .catch((error) => {
           
             const errorMessage = error.message;
           
